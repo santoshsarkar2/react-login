@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {login} from '../../services/authService';
+import { login } from '../../services/authService';
 
 function Login() {
   const [form, setForm] = useState({ email: '', password: '' });
@@ -14,9 +14,9 @@ function Login() {
     e.preventDefault();
     try {
       //const res = await API.post('/login', form);
-        const res = await login(form.email, form.password);
+      const res = await login(form.email, form.password);
       localStorage.setItem('token', res.data.token);
-      alert('Login successful!');
+      //alert('Login successful!');
       navigate('/dashboard');
     } catch (err) {
       alert('Login failed: ' + err.response.data.error);
