@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 //import API from '../../services/api';
 import {signup} from '../../services/authService';
+import { Link, useNavigate } from 'react-router-dom';
 
 function Signup() {
   const [form, setForm] = useState({
     first_name: '', last_name: '', email: '', password: '', avatar: ''
   });
+  const navigate = useNavigate();
 
   const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -13,17 +15,18 @@ function Signup() {
     e.preventDefault();
     try {
       //await API.post('/signup', form);
-        await signup(form.first_name, form.last_name, form.email, form.password, form.avatar);     
-
+        await signup(form.first_name, form.last_name, form.email, form.password, form.avatar);    
       alert('Signup successful!');
+      navigate('/login');
     } catch (err) {
       alert('Signup failed: ' + err.response.data.error);
     }
   };
 
   return (
-    <div className="container mt-5">
-      <h2>Signup</h2>
+    <div className="d-flex justify-content-center mt-5">      
+      <div className="card p-4 shadow-lg">        
+        <h2 className="text-2xl font-bold mb-4 text-center">Signup</h2>
       <form onSubmit={handleSubmit}>
         <div className="row">
           <div className="col">
@@ -38,7 +41,13 @@ function Signup() {
         <input name="avatar" className="form-control mt-3" placeholder="Avatar URL" onChange={handleChange} />
         <button className="btn btn-primary mt-3">Signup</button>
       </form>
-    </div>
+      <p className="mt-3 text-center">
+            Already have an account?{' '}
+            <Link to="/login" className="text-primary">
+              Login
+            </Link>
+          </p>
+    </div></div>
   );
 }
 
