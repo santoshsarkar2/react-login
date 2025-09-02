@@ -17,16 +17,36 @@ const handleApiError = (error) => {
 
 export const login = async (email, password) => {
     try {
-        console.log("AuthService login called", email, password);
+        // Validate inputs before making the API call
+        if (!email || !password) {
+            throw new Error('Email and password are required');
+        }
+
+        console.debug('AuthService login called with email:', email); // Avoid logging sensitive data like passwords
         const response = await API.post('/auth/login', { email, password });
-        return response;
+
+        // Ensure response contains expected data
+        if (!response?.data) {
+            throw new Error('Invalid response from server');
+        }
+
+        return response.data; // Return only the data portion of the response
     } catch (error) {
-        throw error.response ? error.response.data : new Error('Network error');
+        // Handle specific HTTP status codes or error types if needed
+        if (error.response) {
+            const { status, data } = error.response;
+            throw new Error(data.message || `Login failed with status ${status}`);
+        } else if (error.request) {
+            throw new Error('No response received from server');
+        } else {
+            throw new Error('Network error or request setup failed');
+        }
     }
 };
 
 export const signup = async (first_name, last_name, email, password, avatar) => {
     try {
+        console.log("Signup service called");
         const response = await API.post('/auth/signup', { first_name, last_name, email, password, avatar });
         return response.data;
     } catch (error) {

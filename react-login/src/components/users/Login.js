@@ -8,20 +8,31 @@ function Login() {
 
   const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleSubmit = async e => {
-    console.log("Login submit called");
-    console.log("Login :", form);
-    e.preventDefault();
-    try {
-      //const res = await API.post('/login', form);
-      const res = await login(form.email, form.password);
-      localStorage.setItem('token', res.data.token);
-      //alert('Login successful!');
-      navigate('/dashboard');
-    } catch (err) {
-      alert('Login failed: ' + err.response.data.error);
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    // Validate form inputs
+    if (!form.email || !form.password) {
+      throw new Error('Email and password are required');
     }
-  };
+
+    const res = await login(form.email, form.password);
+    
+    // Check if response exists
+    if (!res) {
+      throw new Error('No data returned from login');
+    }
+
+    console.log('Login response:', res); // Log the response (e.g., { token, user })
+    localStorage.setItem('token', res.token); // Access token directly
+    navigate('/dashboard');
+  } catch (error) {
+    // Safely handle errors
+    const errorMessage = error.message || 'An unknown error occurred';
+    console.error('Login failed:', errorMessage);
+    alert(`Login failed: ${errorMessage}`);
+  }
+};
 
   return (
     
